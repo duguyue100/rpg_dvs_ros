@@ -72,7 +72,11 @@ void Binder::imageCallback(const sensor_msgs::Image::ConstPtr& msg)
   }
 
   // convert from grayscale to color image
+  // To check if this is true
   cv::cvtColor(cv_ptr->image, last_image_, CV_GRAY2BGR);
+  cv::Mat last_image__ = cv::Mat(msg->height, msg->width, CV_8UC2, cv::Scalar(0, 0));
+  int from_to[] = { 0,0 }; 
+  cv::mixChannels(&cv_ptr->image, 1, &last_image_, 1, from_to, 1);
 
   if (!used_last_image_)
   {
