@@ -34,13 +34,13 @@ Binder::Binder(ros::NodeHandle & nh, ros::NodeHandle nh_private) : nh_(nh)
   image_transport::ImageTransport it_(nh_);
   image_sub_ = it_.subscribe("image", 1, &Binder::imageCallback, this);
   image_pub_ = it_.advertise("dvs_binder", 1);
-  undistorted_image_pub_ = it_.advertise("dvs_undistorted", 1);
+  // undistorted_image_pub_ = it_.advertise("dvs_undistorted", 1);
 }
 
 Binder::~Binder()
 {
   image_pub_.shutdown();
-  undistorted_image_pub_.shutdown();
+  // undistorted_image_pub_.shutdown();
 }
 
 void Binder::cameraInfoCallback(const sensor_msgs::CameraInfo::ConstPtr& msg)
@@ -102,12 +102,13 @@ void Binder::eventsCallback(const dvs_msgs::EventArray::ConstPtr& msg)
 
       if (last_image_.rows == msg->height && last_image_.cols == msg->width)
       {
+        // TODO: modify last_image_ so that it fits in the two channel image
         last_image_.copyTo(cv_image.image);
         used_last_image_ = true;
       }
       else
       {
-        cv_image.image = cv::Mat(msg->height, msg->width, CV_8UC3);
+        cv_image.image = cv::Mat(msg->height, msg->width, CV_8UC2);
         cv_image.image = cv::Scalar(0,0,0);
       }
 
@@ -153,14 +154,18 @@ void Binder::eventsCallback(const dvs_msgs::EventArray::ConstPtr& msg)
     }
 
     image_pub_.publish(cv_image.toImageMsg());
-
-    if (got_camera_info_ && undistorted_image_pub_.getNumSubscribers() > 0)
-    {
-      cv_bridge::CvImage cv_image2;
-      cv_image2.encoding = cv_image.encoding;
-      cv::undistort(cv_image.image, cv_image2.image, camera_matrix_, dist_coeffs_);
-      undistorted_image_pub_.publish(cv_image2.toImageMsg());
-    }
+    // if (got_camera_info_)
+    // {
+    //   // publish undistorted image when camera info is available
+    //   cv_bridge::CvImage cv_image2;
+    //   cv_image2.encoding = cv_image.encoding;
+    //   cv::undistort(cv_image.image, cv_image2.image, camera_matrix_, dist_coeffs_);
+    //   image_pub_.publish(cv_image.toImageMsg());
+    // }
+    // else
+    // {
+    //   image_pub_.publish(cv_image.toImageMsg());
+    // }
   }
 }
 
