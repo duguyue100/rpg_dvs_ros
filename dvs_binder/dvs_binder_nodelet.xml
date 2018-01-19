@@ -1,0 +1,7 @@
+<library path="lib/libdvs_binder_nodelet">
+  <class name="dvs_binder/DvsBinderNodelet" type="dvs_binder::DvsBinderNodelet" base_class_type="nodelet::Nodelet">
+    <description> 
+      A nodelet wrapper for the dvs_binder.
+    </description>
+  </class>
+</library>
