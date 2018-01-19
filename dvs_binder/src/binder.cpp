@@ -18,8 +18,7 @@
 
 namespace dvs_binder {
 
-Binder::Binder(ros::NodeHandle & nh, ros::NodeHandle nh_private) : nh_(nh),
-    image_tracking_(nh)
+Binder::Binder(ros::NodeHandle & nh, ros::NodeHandle nh_private) : nh_(nh)
 {
   got_camera_info_ = false;
 
@@ -72,8 +71,6 @@ void Binder::cameraInfoCallback(const sensor_msgs::CameraInfo::ConstPtr& msg)
 
 void Binder::imageCallback(const sensor_msgs::Image::ConstPtr& msg)
 {
-  image_tracking_.imageCallback(msg);
-
   cv_bridge::CvImagePtr cv_ptr;
 
   try
@@ -109,7 +106,6 @@ void Binder::eventsCallback(const dvs_msgs::EventArray::ConstPtr& msg)
   }
 
   publishStats();
-  image_tracking_.eventsCallback(msg);
 
   // only create image if at least one subscriber
   if (image_pub_.getNumSubscribers() > 0)

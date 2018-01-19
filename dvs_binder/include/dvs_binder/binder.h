@@ -27,8 +27,6 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
-#include "image_tracking.h"
-
 #include <dvs_msgs/Event.h>
 #include <dvs_msgs/EventArray.h>
 
@@ -75,7 +73,6 @@ private:
     GRAYSCALE, RED_BLUE
   } display_method_;
 
-  ImageTracking image_tracking_;
 };
 
 } // namespace

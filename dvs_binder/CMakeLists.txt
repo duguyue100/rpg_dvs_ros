@@ -11,14 +11,12 @@ find_package(OpenCV REQUIRED)
 
 # make the executable
 cs_add_executable(dvs_binder
-  src/image_tracking.cpp
   src/binder.cpp
   src/binder_node.cpp
 )
 
 # make the nodelet into a library
 cs_add_library(dvs_binder_nodelet
-  src/image_tracking.cpp
   src/binder_nodelet.cpp
   src/binder.cpp
 )
