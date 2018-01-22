@@ -34,7 +34,6 @@ Binder::Binder(ros::NodeHandle & nh, ros::NodeHandle nh_private) : nh_(nh)
   image_transport::ImageTransport it_(nh_);
   image_sub_ = it_.subscribe("image", 1, &Binder::imageCallback, this);
   image_pub_ = it_.advertise("dvs_binder", 1);
-  // undistorted_image_pub_ = it_.advertise("dvs_undistorted", 1);
 }
 
 Binder::~Binder()
