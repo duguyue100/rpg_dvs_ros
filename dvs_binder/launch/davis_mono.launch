@@ -13,7 +13,7 @@
 
   <!-- display -->
   <node name="image_view" pkg="image_view" type="image_view">
-  	<remap from="image" to="dvs_bind"/>
+      <remap from="image" to="dvs_bind"/>
   </node>
 
   <!-- configure -->
