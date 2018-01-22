@@ -34,7 +34,7 @@ Binder::Binder(ros::NodeHandle & nh, ros::NodeHandle nh_private) : nh_(nh)
 
   image_transport::ImageTransport it_(nh_);
   image_sub_ = it_.subscribe("image", 1, &Binder::imageCallback, this);
-  image_pub_ = it_.advertise("dvs_binder", 1);
+  image_pub_ = it_.advertise("dvs_bind", 1);
 }
 
 Binder::~Binder()
@@ -71,16 +71,15 @@ void Binder::imageCallback(const sensor_msgs::Image::ConstPtr& msg)
   }
 
   // convert from grayscale to color image
-  // To check if this is true
-  last_image_ = cv_ptr->image;
+  cv_ptr->image.copyTo(last_image_);
 
   if (!used_last_image_)
   {
     cv_bridge::CvImage cv_image;
-    last_image_.copyTo(cv_image.image);
-    cv_image.encoding = "mono8";
+    cv::cvtColor(last_image_, cv_image.image, CV_GRAY2BGR);
+    cv_image.encoding = "bgr8";
     std::cout << "publish image from callback" << std::endl;
-    image_pub_.publish(cv_image.toImageMsg());
+    // image_pub_.publish(cv_image.toImageMsg());
   }
   used_last_image_ = false;
 }
@@ -98,8 +97,9 @@ void Binder::eventsCallback(const dvs_msgs::EventArray::ConstPtr& msg)
 
     if (bind_method_ == BINDED)
     {
-      cv_image.encoding = "bg8";
-      std::vector<cv::Mat> channels(2);
+      cv_image.encoding = "bgr8";
+      cv_image.image = cv::Mat(msg->height, msg->width, CV_8UC3);
+      std::vector<cv::Mat> channels(3);
 
       // define image channels
       if (last_image_.rows == msg->height && last_image_.cols == msg->width)
@@ -115,6 +115,8 @@ void Binder::eventsCallback(const dvs_msgs::EventArray::ConstPtr& msg)
       // define event channels
       channels[1] = cv::Mat(msg->height, msg->width, CV_8U);
       channels[1] = cv::Scalar(threshold_);
+      channels[2] = cv::Mat(msg->height, msg->width, CV_8U);
+      channels[2] = cv::Scalar(0);
 
       unsigned int num_events = (bind_max_events_ < msg->events.size()) ? bind_max_events_ : msg->events.size();
 
@@ -123,7 +125,7 @@ void Binder::eventsCallback(const dvs_msgs::EventArray::ConstPtr& msg)
         const int x = msg->events[i].x;
         const int y = msg->events[i].y;
 
-        if (msg->events[i].polarity == 1 && channels[1].at<uint8_t>(cv::Point(x, y)) < threshold_*2)
+        if (msg->events[i].polarity == 1 && channels[1].at<uint8_t>(cv::Point(x, y)) < threshold_*2-1)
           channels[1].at<uint8_t>(cv::Point(x, y))++;
         else if (channels[1].at<uint8_t>(cv::Point(x, y)) > 0)
           channels[1].at<uint8_t>(cv::Point(x, y))--;
@@ -145,7 +147,7 @@ void Binder::eventsCallback(const dvs_msgs::EventArray::ConstPtr& msg)
         const int x = msg->events[i].x;
         const int y = msg->events[i].y;
 
-        if (msg->events[i].polarity == 1 && cv_image.image.at<uint8_t>(cv::Point(x, y)) < threshold_*2)
+        if (msg->events[i].polarity == 1 && cv_image.image.at<uint8_t>(cv::Point(x, y)) < threshold_*2-1)
           cv_image.image.at<uint8_t>(cv::Point(x, y))++;
         else if (cv_image.image.at<uint8_t>(cv::Point(x, y)) > 0)
           cv_image.image.at<uint8_t>(cv::Point(x, y))--;

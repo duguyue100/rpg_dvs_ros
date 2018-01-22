@@ -1,7 +1,7 @@
 <launch>
   <!-- visualization -->
   <node name="dvs_binder_left" pkg="dvs_binder" type="dvs_binder" output="screen">
-    <param name="bind_method" value="binded"/>
+    <param name="bind_method" value="grayscale"/>
     <remap from="events" to="/dvs/events" />
     <remap from="image" to="/dvs/image_raw" />
     <remap from="dvs_bind" to="dvs_bind" />
