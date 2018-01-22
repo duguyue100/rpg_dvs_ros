@@ -67,10 +67,15 @@ private:
   };
   EventStats event_stats_[2]; /**< event statistics for 1 and 5 sec */
 
-  enum DisplayMethod
+  // GRAYSCALE: no binding
+  // BINDED: binded as two channels
+  enum BindMethod
   {
-    GRAYSCALE, RED_BLUE
-  } display_method_;
+    GRAYSCALE, BINDED
+  } bind_method_;
+
+  const unsigned int bind_max_events_ = 10000;
+  const unsigned int threshold_ = 8;
 
 };
 
