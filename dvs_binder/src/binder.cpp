@@ -98,7 +98,6 @@ void Binder::eventsCallback(const dvs_msgs::EventArray::ConstPtr& msg)
     if (bind_method_ == BINDED)
     {
       cv_image.encoding = "bgr8";
-      cv_image.image = cv::Mat(msg->height, msg->width, CV_8UC3);
       std::vector<cv::Mat> channels(3);
 
       // define image channels
