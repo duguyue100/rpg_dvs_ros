@@ -100,6 +100,10 @@ void Binder::eventsCallback(const dvs_msgs::EventArray::ConstPtr& msg)
       cv_image.encoding = "bgr8";
       std::vector<cv::Mat> channels(3);
 
+      // define event channels
+      channels[0] = cv::Mat(msg->height, msg->width, CV_8U);
+      channels[0] = cv::Scalar(threshold_);
+
       // define image channels
       if (last_image_.rows == msg->height && last_image_.cols == msg->width)
       {
@@ -111,9 +115,6 @@ void Binder::eventsCallback(const dvs_msgs::EventArray::ConstPtr& msg)
         channels[1] = cv::Scalar(0);
       }
 
-      // define event channels
-      channels[0] = cv::Mat(msg->height, msg->width, CV_8U);
-      channels[0] = cv::Scalar(threshold_);
       channels[2] = cv::Mat(msg->height, msg->width, CV_8U);
       channels[2] = cv::Scalar(0);
 
