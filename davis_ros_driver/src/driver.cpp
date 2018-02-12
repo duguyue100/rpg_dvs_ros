@@ -526,6 +526,8 @@ void DavisRosDriver::readout()
 
     caerDeviceConfigSet(davis_handle_, CAER_HOST_CONFIG_DATAEXCHANGE, CAER_HOST_CONFIG_DATAEXCHANGE_BLOCKING, true);
     caerDeviceDataStart(davis_handle_, NULL, NULL, NULL, &DavisRosDriver::onDisconnectUSB, this);
+    // force libcaer autoexposure to shutdown
+    caerDeviceConfigSet(davis_handle_, DAVIS_CONFIG_APS, DAVIS_CONFIG_APS_AUTOEXPOSURE, 0);
 
     boost::posix_time::ptime next_send_time = boost::posix_time::microsec_clock::local_time();
 
