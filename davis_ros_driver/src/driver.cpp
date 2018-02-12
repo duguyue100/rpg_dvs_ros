@@ -179,6 +179,7 @@ void DavisRosDriver::caerConnect()
   if(current_config_.autoexposure_enabled)
   {
     caerDeviceConfigSet(davis_handle_, DAVIS_CONFIG_APS, DAVIS_CONFIG_APS_EXPOSURE, current_config_.exposure);
+    caerDeviceConfigSet(davis_handle_, DAVIS_CONFIG_APS, DAVIS_CONFIG_APS_AUTOEXPOSURE, 0);
   }
 
   // Re-send params from param server if not first connection
